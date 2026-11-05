@@ -566,3 +566,15 @@
     animation: none;
   }
 }
+
+.prompt-error {
+  margin: 0;
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+
+.prompt-count {
+  margin-left: auto;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
