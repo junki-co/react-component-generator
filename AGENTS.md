@@ -17,6 +17,7 @@
 
 - API 키를 클라이언트로 내려보내지 마라. `/api/config`는 키 존재 여부만 boolean으로 반환한다 (`server/index.ts:150-153`). 키 값 자체를 응답에 넣지 마라.
 - API 키를 코드에 하드코딩하거나 로그로 출력하지 마라. 서버 키는 `process.env`에서만 읽는다 (`server/index.ts:59-62`). `.env`는 커밋 금지 (`.gitignore`).
+- 민감 파일(`.env`, `.env.*`, `.credential(s)*`, 이름에 `secret`/`credential`이 들어간 파일, `*.pem`, `*.key`, `*.p12`, `*.pfx`, `id_rsa*`, `id_ed25519*`, `.npmrc`)은 읽기·수정·생성하지 마라. `~/.ssh`, `~/.aws`, `~/.config/gcloud`도 읽지 마라. `cat`/`grep`/`source`/`cp` 등 Bash나 스크립트로 우회하는 것도 금지다. `.claude/settings.json`의 `permissions.deny`가 같은 규칙을 강제하며, 이 deny 목록을 완화하거나 제거하지 마라.
 - 서버가 생성 코드를 정규화하는 파이프라인 `ensureRenderCall(stripCodeFences(text))` (`server/index.ts:188`)을 우회하지 마라. 프론트엔드는 이미 정규화된 코드만 받는다고 가정한다.
 
 ### Hard Constraints
