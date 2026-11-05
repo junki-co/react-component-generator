@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { PromptInput } from './components/PromptInput';
 import { ComponentCard } from './components/ComponentCard';
 import { useComponentGenerator } from './hooks/useComponentGenerator';
+import { usePersistentState } from './hooks/usePersistentState';
 import type { Provider } from './types';
 import './App.css';
 
@@ -10,16 +11,37 @@ const PROVIDER_CONFIG = {
   google: { label: 'Google', placeholder: 'AIza...' },
 } as const;
 
+const isProvider = (v: unknown): v is Provider => v === 'anthropic' || v === 'google';
+
+function parseApiKeys(raw: unknown): Record<Provider, string> | undefined {
+  if (!raw || typeof raw !== 'object') return undefined;
+  const { anthropic, google } = raw as Record<string, unknown>;
+  return {
+    anthropic: typeof anthropic === 'string' ? anthropic : '',
+    google: typeof google === 'string' ? google : '',
+  };
+}
+
 function App() {
-  const [apiKey, setApiKey] = useState('');
+  const [apiKeys, setApiKeys] = usePersistentState<Record<Provider, string>>(
+    'rcg:api-keys',
+    { anthropic: '', google: '' },
+    parseApiKeys,
+  );
   const [showKey, setShowKey] = useState(false);
-  const [provider, setProvider] = useState<Provider>('google');
+  const [provider, setProvider] = usePersistentState<Provider>(
+    'rcg:provider',
+    'google',
+    (raw) => (isProvider(raw) ? raw : undefined),
+  );
+  const apiKey = apiKeys[provider];
+  const setApiKey = (value: string) => setApiKeys((prev) => ({ ...prev, [provider]: value }));
   const [envKeys, setEnvKeys] = useState<Record<Provider, boolean>>({
     anthropic: false,
     google: false,
   });
   const [now, setNow] = useState(() => new Date());
-  const { components, isLoading, error, generate, removeComponent, clearAll } =
+  const { components, history, isLoading, error, generate, removeComponent, clearAll } =
     useComponentGenerator();
 
   useEffect(() => {
@@ -46,7 +68,6 @@ function App() {
 
   const handleProviderChange = (newProvider: Provider) => {
     setProvider(newProvider);
-    setApiKey('');
   };
 
   const activeProvider = PROVIDER_CONFIG[provider].label;
@@ -72,7 +93,7 @@ function App() {
             <div className="titlebar">
               <span className="titlebar-text">프롬프트</span>
             </div>
-            <PromptInput onGenerate={handleGenerate} isLoading={isLoading} />
+            <PromptInput onGenerate={handleGenerate} isLoading={isLoading} history={history} />
           </section>
 
           <aside className="window settings-panel" aria-label="실행 설정">
