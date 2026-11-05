@@ -1,0 +1,54 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: light;
+  font-synthesis: none;
+  --desk: #5f8ba8;
+  --desk-dither: #54809d;
+  --platinum: #d6d8da;
+  --platinum-deep: #9a9ca1;
+  --paper: #fbfbf9;
+  --ink: #000;
+  --select: #2b3a8c;
+  --led-on: #2f9e44;
+  --alert: #d23b2a;
+  --font-ui: Galmuri14, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+  --font-code: GalmuriMono11, 'D2Coding', ui-monospace, Menlo, Consolas, monospace;
+}
+
+body {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.6;
+  background-color: var(--desk);
+  background-image: conic-gradient(
+    var(--desk-dither) 25%,
+    transparent 0 50%,
+    var(--desk-dither) 0 75%,
+    transparent 0
+  );
+  background-size: 4px 4px;
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--select);
+  outline-offset: 2px;
+}
